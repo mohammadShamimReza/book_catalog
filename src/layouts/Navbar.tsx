@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { signOut } from 'firebase/auth';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
-import logo from '../assets/images/creative-abstract-book-feather-logo-design-vector.jpg';
+import logo from '../assets/images/technet-logo.png';
 import Cart from '../components/Cart';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Button } from '../components/ui/button';
@@ -35,11 +35,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between w-full md:max-w-7xl h-full mx-auto ">
           <div>
             <Link to="/">
-              <img className="h-16" src={logo} alt="log" />
+              <img className="h-8" src={logo} alt="log" />
             </Link>
-          </div>
-          <div className="">
-            <p className=" text-4xl">Bookself Haven</p>
           </div>
           <div>
             <ul className="flex items-center">
