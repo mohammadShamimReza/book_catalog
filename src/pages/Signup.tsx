@@ -64,14 +64,14 @@ export default function Signup() {
       <div className="w-full max-w-md">
         <div className="mx-auto p-8 bg-white rounded-lg shadow-md">
           <div className="flex justify-between mb-6">
-            <Link to="/login" className={cn('text-sm font-bold text-blue-500')}>
-              Login
-            </Link>
             <h1 className="text-2xl font-semibold text-center">
               Create an account
             </h1>
+            <Link to="/login" className={cn('text-sm font-bold text-blue-500')}>
+              Login
+            </Link>
           </div>
-          <p className="text-sm text-center text-gray-600">
+          <p className="text-sm text-left text-gray-600">
             Enter your email below to create your account
           </p>
           <form className="mt-4" onSubmit={handleSubmit}>
