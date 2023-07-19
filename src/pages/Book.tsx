@@ -1,10 +1,10 @@
 import BookCard from '@/components/BookCard';
 import { useToast } from '@/components/ui/use-toast';
-import { useGetSearchBooksQuery } from '@/redux/features/products/productApi';
+import { useGetSearchBooksQuery } from '@/redux/features/books/bookApi';
 import { IBook } from '@/types/globalTypes';
 import { useState } from 'react';
 
-export default function Products() {
+export default function Book() {
   const [searchTerm, setSearchTerm] = useState('');
   const { data, isLoading, error } = useGetSearchBooksQuery(searchTerm);
 

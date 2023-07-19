@@ -1,5 +1,5 @@
 import ProductReview from '@/components/ProductReview';
-import { useSingleBookQuery } from '@/redux/features/products/productApi';
+import { useSingleBookQuery } from '@/redux/features/books/bookApi';
 import { IBook } from '@/types/globalTypes';
 import { useParams } from 'react-router-dom';
 

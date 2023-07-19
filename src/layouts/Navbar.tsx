@@ -47,12 +47,12 @@ export default function Navbar() {
               </li>
               <li>
                 <Button variant="link" asChild>
-                  <Link to="/products">Books</Link>
+                  <Link to="/books">Books</Link>
                 </Button>
               </li>
               <li>
                 <Button variant="link" asChild>
-                  <Link to="/checkout">Checkout</Link>
+                  <Link to="/addNew">Add new</Link>
                 </Button>
               </li>
               <li>
