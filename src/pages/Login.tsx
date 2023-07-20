@@ -1,3 +1,4 @@
+import Navbar from '@/layouts/Navbar';
 import { cn } from '@/lib/utils';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -39,34 +40,34 @@ export default function Login() {
 
   return (
     <div>
-      <nav className="flex items-center justify-between px-4 py-2 bg-gray-200">
-        <div>
-          <Link to="/" className="text-xl font-bold">
-            Home
-          </Link>
-        </div>
-        <div>
-          <Link
-            to="/signup"
-            className={cn(
-              'text-sm font-bold text-blue-500',
-              'ml-auto', // Move the button to the right corner
-              'w-min', // Set minimum width
-              'max-w-xs', // Set maximum width
-              'px-4', // Add horizontal padding
-              'py-2' // Add vertical padding
-            )}
-          >
-            Signup
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="flex items-center justify-center h-screen">
         <div className="w-full max-w-md">
           <div className="mx-auto p-8 bg-white rounded-lg shadow-md">
-            <div className="flex justify-between mb-6">
-              <h1 className="text-2xl font-semibold text-center">Login</h1>
+            <div className="flex flex-col align-middle justify-center mb-6">
+              <div className="flex justify-between">
+                <h1 className="text-2xl font-semibold text-center">Login</h1>
+                <div>
+                  <Link
+                    to="/signup"
+                    className={cn(
+                      'text-sm font-bold text-blue-500',
+                      'ml-auto', // Move the button to the right corner
+                      'w-min', // Set minimum width
+                      'max-w-xs', // Set maximum width
+                      'px-4', // Add horizontal padding
+                      'py-2' // Add vertical padding
+                    )}
+                  >
+                    Signup
+                  </Link>
+                </div>
+              </div>
+              <br />
+              <p className="text-sm text-left text-gray-600 text-center">
+                Enter your email & password below to login
+              </p>
             </div>
             <form className="mt-4" onSubmit={handleSubmit}>
               <div className="mb-4">
