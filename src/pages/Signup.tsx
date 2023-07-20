@@ -1,6 +1,8 @@
 import Navbar from '@/layouts/Navbar';
 import { cn } from '@/lib/utils';
 import { useCreateUserMutation } from '@/redux/features/user/userApi';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -14,9 +16,29 @@ interface FormData {
   address: string;
 }
 
+type res =
+  | {
+      data: {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: {
+          email: string;
+          name: string;
+          phone: string;
+          address: string;
+          password: string;
+          _id: string;
+          __v: number;
+        };
+      };
+    }
+  | {
+      error: FetchBaseQueryError | SerializedError;
+    };
+
 export default function Signup() {
-  const [createUser, { isLoading, isError, isSuccess }] =
-    useCreateUserMutation();
+  const [createUser] = useCreateUserMutation();
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -37,14 +59,22 @@ export default function Signup() {
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match.');
       return;
     }
-    createUser(formData);
+
+    const response: res = await createUser(formData);
+    if ('data' in response) {
+      notify(response.data.message);
+    } else if ('error' in response) {
+      console.log(response.error);
+    }
+    console.log(response);
+
     // Perform form submission or data processing here
     console.log(formData, 'from data');
 
@@ -66,18 +96,6 @@ export default function Signup() {
   );
   // formData.password !== formData.confirmPassword;
   const notify = (action: string) => toast(action);
-
-  if (isSuccess) {
-    notify('User created successfully!');
-  }
-
-  if (isLoading) {
-    notify('Creating user...');
-  }
-
-  if (isError) {
-    notify('Error creating user:');
-  }
 
   return (
     <div>
