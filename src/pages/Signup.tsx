@@ -1,11 +1,13 @@
 import Navbar from '@/layouts/Navbar';
 import { cn } from '@/lib/utils';
 import { useCreateUserMutation } from '@/redux/features/user/userApi';
+import { setUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch } from '@/redux/hook';
 import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface FormData {
   name: string;
@@ -38,7 +40,9 @@ type res =
     };
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [createUser] = useCreateUserMutation();
+  const dispatch = useAppDispatch();
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -69,16 +73,20 @@ export default function Signup() {
 
     const response: res = await createUser(formData);
     if ('data' in response) {
-      notify(response.data.message);
+      if (response.data.statusCode === 200) {
+        notify(response.data.message);
+        notify('login successful');
+        dispatch(setUser({ email: formData.email }));
+        setTimeout(() => {
+          navigate(-1);
+        }, 1000);
+      }
     } else if ('error' in response) {
+      notify('try again');
+      dispatch(setUser({ email: null }));
       console.log(response.error);
     }
-    console.log(response);
 
-    // Perform form submission or data processing here
-    console.log(formData, 'from data');
-
-    // createUser(formData);
     setFormData({
       name: '',
       email: '',

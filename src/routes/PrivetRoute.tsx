@@ -7,13 +7,10 @@ interface IProps {
 }
 
 export default function PrivetRoute({ children }: IProps) {
-  const { user, isLoading } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
   const { pathname } = useLocation();
-  if (isLoading) {
-    return <p>Loading ...</p>;
-  }
 
-  if (!user.email && !isLoading) {
+  if (!user.email) {
     return <Navigate to="/login" state={{ path: pathname }} />;
   }
   return children;

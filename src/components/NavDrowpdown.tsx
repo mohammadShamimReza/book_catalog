@@ -1,6 +1,6 @@
 import { auth } from '@/lib/firebase';
 // import { setUser } from '@/redux/features/user/userSlice';
-import { useAppDispatch } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { signOut } from 'firebase/auth';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
@@ -14,7 +14,7 @@ import {
 } from '../components/ui/dropdown-menu';
 
 export default function NavDrowpdown() {
-  // const { user } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
 
@@ -37,7 +37,7 @@ export default function NavDrowpdown() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
-        {/* {!user.email && ( */}
+        {/* {user.email && ( */}
         <>
           {' '}
           <Link to="/login">

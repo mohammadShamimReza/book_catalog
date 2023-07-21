@@ -1,12 +1,14 @@
 import App from '@/App';
 import AddNew from '@/pages/AddNew';
 import Book from '@/pages/Book';
+import BookDetails from '@/pages/BookDetails';
+import EditBook from '@/pages/EditBook';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import NotFound from '@/pages/NotFound';
-import ProductDetails from '@/pages/ProductDetails';
 import Signup from '@/pages/Signup';
 import { createBrowserRouter } from 'react-router-dom';
+import PrivetRoute from './PrivetRoute';
 
 const routes = createBrowserRouter([
   {
@@ -23,14 +25,19 @@ const routes = createBrowserRouter([
       },
       {
         path: '/book-details/:id',
-        element: <ProductDetails />,
+        element: <BookDetails />,
+      },
+      {
+        path: '/editbook/:id',
+        element: <EditBook />,
       },
       {
         path: '/addNew',
         element: (
-          // <PrivetRoute>
-          <AddNew />
-          // </PrivetRoute>
+          <PrivetRoute>
+            <AddNew />
+            //{' '}
+          </PrivetRoute>
         ),
       },
     ],

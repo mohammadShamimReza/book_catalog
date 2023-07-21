@@ -1,10 +1,14 @@
 import ProductReview from '@/components/ProductReview';
+import { Button } from '@/components/ui/button';
 import { useSingleBookQuery } from '@/redux/features/books/bookApi';
+import { useAppSelector } from '@/redux/hook';
 import { IBook } from '@/types/globalTypes';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function ProductDetails() {
+export default function BookDetails() {
   const { id } = useParams();
+  const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useSingleBookQuery(id);
 
@@ -30,7 +34,21 @@ export default function ProductDetails() {
               <li key={feature}>{feature}</li>
             ))}
           </ul> */}
-          {/* <Button>Add to cart</Button> */}
+          <br />
+          <br />
+          <div className="flex justify-center gap-10">
+            <Button
+              onClick={() =>
+                user.email === null
+                  ? navigate('/login')
+                  : navigate(`/editbook/${id}`)
+              }
+            >
+              Edit the book
+            </Button>
+
+            <Button variant={'destructive'}>Delete the book</Button>
+          </div>
         </div>
         <div className="w-[50%]">
           <img src={book?.image} alt="" />

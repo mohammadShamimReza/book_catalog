@@ -1,14 +1,45 @@
 import Navbar from '@/layouts/Navbar';
 import { cn } from '@/lib/utils';
+import { useLogInMutation } from '@/redux/features/user/userApi';
+import { setUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch } from '@/redux/hook';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string;
   password: string;
 }
 
+type res =
+  | {
+      data: {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: {
+          email: string;
+          name: string;
+          phone: string;
+          address: string;
+          password: string;
+          _id: string;
+          __v: number;
+        };
+      };
+    }
+  | {
+      error: FetchBaseQueryError | SerializedError;
+    };
+
 export default function Login() {
+  const [logIn] = useLogInMutation();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -22,11 +53,27 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Perform login or authentication logic here
     console.log(formData);
+
+    const response: res = await logIn(formData);
+    if ('data' in response) {
+      if (response.data.statusCode === 200) {
+        notify(response.data.message);
+        notify('login successful');
+        dispatch(setUser({ email: formData.email }));
+        setTimeout(() => {
+          navigate(-1);
+        }, 1000);
+      }
+    } else if ('error' in response) {
+      notify('try again');
+      dispatch(setUser({ email: null }));
+      console.log(response.error);
+    }
 
     // Reset the form
     setFormData({
@@ -37,10 +84,12 @@ export default function Login() {
 
   const isSubmitDisabled =
     formData.email.trim() === '' || formData.password.trim() === '';
+  const notify = (action: string) => toast(action);
 
   return (
     <div>
       <Navbar />
+      <Toaster position="bottom-right" />
 
       <div className="flex items-center justify-center h-screen">
         <div className="w-full max-w-md">

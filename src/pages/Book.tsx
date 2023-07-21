@@ -1,14 +1,17 @@
 import BookCard from '@/components/BookCard';
-import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import { useGetSearchBooksQuery } from '@/redux/features/books/bookApi';
+import { useAppSelector } from '@/redux/hook';
 import { IBook } from '@/types/globalTypes';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Book() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const { data, isLoading, error } = useGetSearchBooksQuery(searchTerm);
 
-  const { toast } = useToast();
+  const { user } = useAppSelector((state) => state.user);
 
   const bookData = data?.data;
 
@@ -123,6 +126,14 @@ export default function Book() {
             }}
           />
         </div>
+        <Button
+          onClick={() =>
+            user.email === null ? navigate('/login') : navigate('addNew')
+          }
+          variant="default"
+        >
+          Add new book
+        </Button>
       </div>
       <div className="col-span-9 grid grid-cols-3 gap-10 pb-20">
         {filteredBooks?.map((book: IBook, index: number) => (
