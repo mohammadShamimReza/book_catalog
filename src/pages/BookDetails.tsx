@@ -12,7 +12,6 @@ export default function BookDetails() {
 
   const { data, isLoading, error } = useSingleBookQuery(id);
 
-  console.log(data?.data);
   const book: IBook = data?.data;
 
   return (

@@ -37,26 +37,26 @@ export default function NavDrowpdown() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
-        {/* {user.email && ( */}
-        <>
-          {' '}
-          <Link to="/login">
-            <DropdownMenuItem className="cursor-pointer">
-              login
-            </DropdownMenuItem>
-          </Link>
-          <Link to="/signup">
-            <DropdownMenuItem className="cursor-pointer">
-              signup
-            </DropdownMenuItem>
-          </Link>
-        </>
-        {/* )}
-        {user.email && ( */}
-        <DropdownMenuItem onClick={hangleLogOut} className="cursor-pointer">
-          logOut
-        </DropdownMenuItem>
-        {/* )} */}
+        {!user.email && (
+          <>
+            {' '}
+            <Link to="/login">
+              <DropdownMenuItem className="cursor-pointer">
+                login
+              </DropdownMenuItem>
+            </Link>
+            <Link to="/signup">
+              <DropdownMenuItem className="cursor-pointer">
+                signup
+              </DropdownMenuItem>
+            </Link>
+          </>
+        )}
+        {user.email && (
+          <DropdownMenuItem onClick={hangleLogOut} className="cursor-pointer">
+            logOut
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

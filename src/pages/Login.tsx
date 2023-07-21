@@ -1,13 +1,15 @@
 import Navbar from '@/layouts/Navbar';
 import { cn } from '@/lib/utils';
+import { setAccessToken } from '@/redux/features/user/authSlice';
 import { useLogInMutation } from '@/redux/features/user/userApi';
 import { setUser } from '@/redux/features/user/userSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import Cookies from 'js-cookie';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string;
@@ -21,13 +23,7 @@ type res =
         success: boolean;
         message: string;
         data: {
-          email: string;
-          name: string;
-          phone: string;
-          address: string;
-          password: string;
-          _id: string;
-          __v: number;
+          accessToken: string;
         };
       };
     }
@@ -36,9 +32,15 @@ type res =
     };
 
 export default function Login() {
+  const prevRoute = useLocation();
+
   const [logIn] = useLogInMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const from = prevRoute.state?.path || -1 || '/';
+
+  console.log(prevRoute);
 
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -57,23 +59,27 @@ export default function Login() {
     e.preventDefault();
 
     // Perform login or authentication logic here
-    console.log(formData);
 
     const response: res = await logIn(formData);
     if ('data' in response) {
       if (response.data.statusCode === 200) {
         notify(response.data.message);
         notify('login successful');
-        dispatch(setUser({ email: formData.email }));
+        dispatch(setUser(formData.email));
+        dispatch(setAccessToken(response.data.data.accessToken));
+        const refreshToken = Cookies.get('refreshToken');
+        console.log(refreshToken);
         setTimeout(() => {
-          navigate(-1);
+          navigate(from);
         }, 1000);
       }
     } else if ('error' in response) {
       notify('try again');
-      dispatch(setUser({ email: null }));
+      dispatch(setUser(null));
       console.log(response.error);
     }
+
+    console.log(response);
 
     // Reset the form
     setFormData({

@@ -15,6 +15,8 @@ export default function Book() {
 
   const bookData = data?.data;
 
+  console.log(data);
+
   // Filter state
   const [genreFilters, setGenreFilters] = useState<string[]>([]);
   const [yearFilters, setYearFilters] = useState<string[]>([]);

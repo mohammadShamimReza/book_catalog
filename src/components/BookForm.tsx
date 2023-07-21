@@ -1,6 +1,54 @@
+import {
+  useSingleBookQuery,
+  useUpdateBookMutation,
+} from '@/redux/features/books/bookApi';
+import { useAppDispatch } from '@/redux/hook';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  confirmPassword: string;
+  address: string;
+}
+
+type res =
+  | {
+      data: {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: {
+          email: string;
+          name: string;
+          phone: string;
+          address: string;
+          password: string;
+          _id: string;
+          __v: number;
+        };
+      };
+    }
+  | {
+      error: FetchBaseQueryError | SerializedError | any;
+    };
 
 function BookForm() {
+  const parems = useParams();
+  const [id, setId] = useState('');
+  const { data } = useSingleBookQuery(parems?.id);
+
+  const dispatch = useAppDispatch();
+
+  const [updateBook] = useUpdateBookMutation();
+
+  // console.log(parems.id);
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
@@ -11,28 +59,39 @@ function BookForm() {
     rating: '',
     image: '',
   });
-  console.log(bookData);
+
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
   useEffect(() => {
     handleValidation();
   }, [bookData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Send the bookData object to the backend
-    console.log(bookData);
-    // Reset the form after submitting
-    setBookData({
-      title: '',
-      author: '',
-      genre: '',
-      publication_year: '',
-      description: '',
-      price: '',
-      rating: '',
-      image: '',
-    });
+
+    const response: res = await updateBook(bookData);
+
+    if ('data' in response) {
+      if (response.data.statusCode === 200) {
+        notify(response.data.message);
+        notify('book update successful');
+        setBookData({
+          title: '',
+          author: '',
+          genre: '',
+          publication_year: '',
+          description: '',
+          price: '',
+          rating: '',
+          image: '',
+        });
+      }
+    } else if ('error' in response) {
+      notify(response.error.data?.message);
+      console.log(response.error);
+    }
+
+    console.log(response);
   };
 
   const handleChange = (
@@ -51,7 +110,7 @@ function BookForm() {
       title.trim() !== '' &&
       author.trim() !== '' &&
       genre.trim() !== '' &&
-      publication_year.trim() !== '' &&
+      // publication_year.trim() !== '' &&
       description.trim() !== ''
     ) {
       setIsSubmitDisabled(false);
@@ -60,10 +119,37 @@ function BookForm() {
     }
   };
 
+  useEffect(() => {
+    {
+      data
+        ? setBookData(data?.data)
+        : setBookData({
+            title: '',
+            author: '',
+            genre: '',
+            publication_year: '',
+            description: '',
+            price: '',
+            rating: '',
+            image: '',
+          });
+    }
+  }, [data]);
+
+  const notify = (action: string) => toast(action);
+
   return (
     <>
+      <Toaster position="bottom-right" />
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
+          <h1 className="text-center text-5xl">
+            {!id ? 'Add' : 'Update'} Book
+          </h1>
+          <br />
+          <br />
+          <br />
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="title"
@@ -75,7 +161,7 @@ function BookForm() {
             id="title"
             type="text"
             name="title"
-            value={bookData.title}
+            value={bookData?.title}
             onChange={handleChange}
             required
           />
@@ -93,7 +179,7 @@ function BookForm() {
             id="author"
             type="text"
             name="author"
-            value={bookData.author}
+            value={bookData?.author}
             onChange={handleChange}
           />
         </div>
@@ -110,7 +196,7 @@ function BookForm() {
             id="genre"
             type="text"
             name="genre"
-            value={bookData.genre}
+            value={bookData?.genre}
             onChange={handleChange}
             required
           />
@@ -128,7 +214,7 @@ function BookForm() {
             id="publication_year"
             type="number" // Change the type to "number"
             name="publication_year"
-            value={bookData.publication_year}
+            value={bookData?.publication_year}
             onChange={handleChange}
           />
         </div>
@@ -144,7 +230,7 @@ function BookForm() {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="description"
             name="description"
-            value={bookData.description}
+            value={bookData?.description}
             onChange={handleChange}
             required
           />
@@ -162,7 +248,7 @@ function BookForm() {
             id="price"
             type="number" // Change the type to "number"
             name="price"
-            value={bookData.price}
+            value={bookData?.price}
             onChange={handleChange}
           />
         </div>
@@ -179,7 +265,7 @@ function BookForm() {
             id="rating"
             type="text"
             name="rating"
-            value={bookData.rating}
+            value={bookData?.rating}
             onChange={handleChange}
           />
         </div>
@@ -196,7 +282,7 @@ function BookForm() {
             id="image"
             type="text"
             name="image"
-            value={bookData.image}
+            value={bookData?.image}
             onChange={handleChange}
           />
         </div>

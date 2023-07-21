@@ -7,7 +7,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 interface FormData {
   name: string;
@@ -36,13 +36,17 @@ type res =
       };
     }
   | {
-      error: FetchBaseQueryError | SerializedError;
+      error: FetchBaseQueryError | SerializedError | any;
     };
 
 export default function Signup() {
+  const prevRoute = useLocation();
+
   const navigate = useNavigate();
   const [createUser] = useCreateUserMutation();
   const dispatch = useAppDispatch();
+
+  const from = prevRoute.state?.path || -1 || '/';
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -76,25 +80,25 @@ export default function Signup() {
       if (response.data.statusCode === 200) {
         notify(response.data.message);
         notify('login successful');
-        dispatch(setUser({ email: formData.email }));
+        dispatch(setUser(formData.email));
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          phone: '',
+          confirmPassword: '',
+          address: '',
+        });
         setTimeout(() => {
-          navigate(-1);
+          navigate(from);
         }, 1000);
       }
     } else if ('error' in response) {
-      notify('try again');
-      dispatch(setUser({ email: null }));
+      dispatch(setUser(null));
+      notify(response.error.data?.message);
       console.log(response.error);
+      notify('try again');
     }
-
-    setFormData({
-      name: '',
-      email: '',
-      password: '',
-      phone: '',
-      confirmPassword: '',
-      address: '',
-    });
 
     setPasswordError('');
   };
