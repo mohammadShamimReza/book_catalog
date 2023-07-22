@@ -78,16 +78,16 @@ function BookForm() {
     if ('data' in response) {
       if (response.data.statusCode === 200) {
         notify(response.data.message);
-        // setBookData({
-        //   title: '',
-        //   author: '',
-        //   genre: '',
-        //   publication_year: '',
-        //   description: '',
-        //   price: '',
-        //   rating: '',
-        //   image: '',
-        // });
+        setBookData({
+          title: '',
+          author: '',
+          genre: '',
+          publication_year: '',
+          description: '',
+          price: '',
+          rating: '',
+          image: '',
+        });
       }
     } else if ('error' in response) {
       notify(response.error.data?.message);
