@@ -13,17 +13,18 @@ export default function BookCard({ book }: IProps) {
           <img src={book?.image} />
           <br />
           <h1 className="text-xl font-semibold">{book?.title}</h1>
-        </Link>
-        <p className="text-sm">
-          Author: {book?.author ? 'In stock' : 'Out of stock'}
-        </p>
-        <p className="text-sm">
-          Genre: {book?.genre ? 'In stock' : 'Out of stock'}
-        </p>
-        <p className="text-sm">Published: {book?.publication_year}</p>
-        {/* <Button variant="default">
+
+          <p className="text-sm">
+            Author: {book?.author ? 'In stock' : 'Out of stock'}
+          </p>
+          <p className="text-sm">
+            Genre: {book?.genre ? 'In stock' : 'Out of stock'}
+          </p>
+          <p className="text-sm">Published: {book?.publication_year}</p>
+          {/* <Button variant="default">
           Add to cart
         </Button> */}
+        </Link>
       </div>
     </div>
   );

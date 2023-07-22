@@ -40,7 +40,6 @@ export default function Login() {
 
   const from = prevRoute.state?.path || -1 || '/';
 
-  console.log(prevRoute);
 
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -64,7 +63,6 @@ export default function Login() {
     if ('data' in response) {
       if (response.data.statusCode === 200) {
         notify(response.data.message);
-        notify('login successful');
         dispatch(setUser(formData.email));
         dispatch(setAccessToken(response.data.data.accessToken));
         const refreshToken = Cookies.get('refreshToken');
@@ -76,10 +74,7 @@ export default function Login() {
     } else if ('error' in response) {
       notify('try again');
       dispatch(setUser(null));
-      console.log(response.error);
     }
-
-    console.log(response);
 
     // Reset the form
     setFormData({

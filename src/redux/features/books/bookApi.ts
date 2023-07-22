@@ -4,17 +4,17 @@ const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
       query: () => '/books/tenBook',
+      providesTags: ['updateBook', 'createBook'],
     }),
     getSearchBooks: builder.query({
       query: (searchData) => `/books/search?query=${searchData}`,
-      providesTags: ['updateBook'],
+      providesTags: ['updateBook', 'createBook'],
     }),
     singleBook: builder.query({
       query: (id) => `/books/${id}`,
     }),
-    updateBook: builder.mutation({
+    createBook: builder.mutation({
       query: ({
-        id,
         title,
         author,
         genre,
@@ -24,7 +24,34 @@ const bookApi = api.injectEndpoints({
         rating,
         image,
       }) => ({
-        url: `books/${id}`,
+        url: `/books/create-book`,
+        method: 'POST',
+        body: {
+          title,
+          author,
+          genre,
+          publication_year,
+          description,
+          price,
+          rating,
+          image,
+        },
+      }),
+      invalidatesTags: ['createBook'],
+    }),
+    updateBook: builder.mutation({
+      query: ({
+        id = '',
+        title,
+        author,
+        genre,
+        publication_year,
+        description,
+        price,
+        rating,
+        image,
+      }) => ({
+        url: `/books/${id}`,
         method: 'PATCH',
         body: {
           title,
@@ -40,17 +67,23 @@ const bookApi = api.injectEndpoints({
 
       invalidatesTags: ['updateBook'],
     }),
-    postComment: builder.mutation({
+    deleteBook: builder.mutation({
+      query: ({ id }) => ({
+        url: `/books/${id}`,
+        method: 'DELETE',
+      }),
+    }),
+    postReview: builder.mutation({
       query: ({ id, data }) => ({
-        url: `comment/${id}`,
+        url: `/books/reviews/${id}`,
         method: 'POST',
         body: data,
       }),
-      // invalidatesTags: ['comments'],
+      invalidatesTags: ['reviews'],
     }),
-    getComment: builder.query({
-      query: (id) => `/comment/${id}`,
-      // providesTags: ['comments'],
+    getReviews: builder.query({
+      query: (id) => `/books/reviews/${id}`,
+      providesTags: ['reviews'],
     }),
   }),
 });
@@ -59,7 +92,9 @@ export const {
   useGetBooksQuery,
   useGetSearchBooksQuery,
   useSingleBookQuery,
-  usePostCommentMutation,
-  useGetCommentQuery,
+  usePostReviewMutation,
+  useGetReviewsQuery,
   useUpdateBookMutation,
+  useCreateBookMutation,
+  useDeleteBookMutation,
 } = bookApi;

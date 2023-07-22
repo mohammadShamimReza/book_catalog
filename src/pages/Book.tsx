@@ -15,8 +15,6 @@ export default function Book() {
 
   const bookData = data?.data;
 
-  console.log(data);
-
   // Filter state
   const [genreFilters, setGenreFilters] = useState<string[]>([]);
   const [yearFilters, setYearFilters] = useState<string[]>([]);
@@ -83,6 +81,16 @@ export default function Book() {
                 onChange={() => handleGenreChange('Non-Fiction')}
               />
               <label htmlFor="non-fiction">Non-Fiction</label>
+              <br />
+              <input
+                type="checkbox"
+                id="deen"
+                value="deen"
+                className="mr-2"
+                checked={genreFilters.includes('deen')}
+                onChange={() => handleGenreChange('deen')}
+              />
+              <label htmlFor="non-fiction">Deen</label>
             </div>
           </div>
           <div className="mt-3">
@@ -130,7 +138,7 @@ export default function Book() {
         </div>
         <Button
           onClick={() =>
-            user.email === null ? navigate('/login') : navigate('addNew')
+            user.email === null ? navigate('/login') : navigate('/addNew')
           }
           variant="default"
         >

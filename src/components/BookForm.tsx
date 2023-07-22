@@ -1,4 +1,5 @@
 import {
+  useCreateBookMutation,
   useSingleBookQuery,
   useUpdateBookMutation,
 } from '@/redux/features/books/bookApi';
@@ -41,14 +42,13 @@ type res =
 
 function BookForm() {
   const parems = useParams();
-  const [id, setId] = useState('');
   const { data } = useSingleBookQuery(parems?.id);
 
   const dispatch = useAppDispatch();
 
   const [updateBook] = useUpdateBookMutation();
+  const [createBook] = useCreateBookMutation();
 
-  // console.log(parems.id);
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
@@ -69,22 +69,25 @@ function BookForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response: res = await updateBook(bookData);
+    const response: res = data?.data
+      ? await updateBook(bookData)
+      : await createBook(bookData);
+
+    console.log(bookData);
 
     if ('data' in response) {
       if (response.data.statusCode === 200) {
         notify(response.data.message);
-        notify('book update successful');
-        setBookData({
-          title: '',
-          author: '',
-          genre: '',
-          publication_year: '',
-          description: '',
-          price: '',
-          rating: '',
-          image: '',
-        });
+        // setBookData({
+        //   title: '',
+        //   author: '',
+        //   genre: '',
+        //   publication_year: '',
+        //   description: '',
+        //   price: '',
+        //   rating: '',
+        //   image: '',
+        // });
       }
     } else if ('error' in response) {
       notify(response.error.data?.message);
@@ -145,7 +148,7 @@ function BookForm() {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <h1 className="text-center text-5xl">
-            {!id ? 'Add' : 'Update'} Book
+            {!parems.id ? 'Add' : 'Update'} Book
           </h1>
           <br />
           <br />
@@ -263,7 +266,7 @@ function BookForm() {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="rating"
-            type="text"
+            type="number"
             name="rating"
             value={bookData?.rating}
             onChange={handleChange}

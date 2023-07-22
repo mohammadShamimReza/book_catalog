@@ -18,17 +18,17 @@ export default function Navbar() {
             <ul className="flex items-center">
               <li>
                 <Button variant="link" asChild>
-                  <Link to="/">Home</Link>
-                </Button>
-              </li>
-              <li>
-                <Button variant="link" asChild>
                   <Link to="/books">All Books</Link>
                 </Button>
               </li>
               <li>
                 <Button variant="link" asChild>
                   <Link to="/addNew">Add new</Link>
+                </Button>
+              </li>
+              <li>
+                <Button variant="link" asChild>
+                  <Link to="/">WishList</Link>
                 </Button>
               </li>
               {/* <li>
